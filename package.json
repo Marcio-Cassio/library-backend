@@ -1,0 +1,19 @@
+{
+  "name": "library-backend",
+  "version": "1.0.0",
+  "description": "```mermaid\r sequenceDiagram\r     participant browser\r     participant server\r     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/\r     activate server\r     server-->>browser: HTML document\r     deactivate server\r     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/kuva.png\r     activate server\r     server-->>browser: the png pic\r     deactivate server\r     Note right of browser: Page with a pic will is rendered\r ```",
+  "main": "library-backend.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@apollo/server": "^5.5.0",
+    "graphql": "^16.13.2"
+  }
+}
