@@ -7,8 +7,8 @@ const User = require('./models/user')
 
 const resolvers = {
   Query: {
-    bookCount: () => Book.countDocuments(),
-    authorCount: () => Author.countDocuments(),
+    bookCount: async () => Book.countDocuments(),
+    authorCount: async () => Author.countDocuments(),
     allBooks: async (root, args) => {
       const filter = {}
 
@@ -24,7 +24,7 @@ const resolvers = {
 
       return books
     },
-    allAuthors: () => Author.find({}),
+    allAuthors: async () => Author.find({}),
     me: (root, args, context) => context.currentUser,
   },
 
