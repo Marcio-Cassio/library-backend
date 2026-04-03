@@ -13,7 +13,7 @@ const typeDefs = require('./schema')
 const resolvers = require('./resolvers')
 const User = require('./models/user')
 
-const startServer = async (port) => {
+const startServer = async (_port) => {
   const app = express()
   const httpServer = http.createServer(app)
 

@@ -1,9 +1,6 @@
 require('dotenv').config()
 const mongoose = require('mongoose')
-const jwt = require('jsonwebtoken')
-
 const startServer = require('./server')
-const User = require('./models/user')
 
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('connected to MongoDB'))
