@@ -1,9 +1,12 @@
 const { GraphQLError } = require('graphql')
+const { PubSub } = require('graphql-subscriptions')
 const jwt = require('jsonwebtoken')
 
 const Author = require('./models/author')
 const Book = require('./models/book')
 const User = require('./models/user')
+
+const pubsub = new PubSub()
 
 const resolvers = {
   Query: {
@@ -24,12 +27,16 @@ const resolvers = {
 
       return books
     },
-    allAuthors: async () => Author.find({}),
-    me: (root, args, context) => context.currentUser,
-  },
+    allAuthors: async () => {
+      const authors = await Author.find({})
+      const books = await Book.find({})
 
-  Author: {
-    bookCount: async (root) => Book.countDocuments({ author: root._id }),
+      return authors.map(author => ({
+        ...author.toObject(),
+        bookCount: books.filter(b => b.author.toString() === author._id.toString()).length
+      }))
+    },
+    me: (root, args, context) => context.currentUser,
   },
 
   Mutation: {
@@ -62,7 +69,9 @@ const resolvers = {
         })
       }
 
-      return book.populate('author')
+      const populatedBook = await book.populate('author')
+      pubsub.publish('BOOK_ADDED', { bookAdded: populatedBook })
+      return populatedBook
     },
 
     editAuthor: async (root, args, context) => {
@@ -110,6 +119,12 @@ const resolvers = {
 
       const userForToken = { username: user.username, id: user._id }
       return { value: jwt.sign(userForToken, process.env.JWT_SECRET) }
+    },
+  },
+
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterableIterator('BOOK_ADDED'),
     },
   },
 }
